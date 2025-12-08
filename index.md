@@ -11,7 +11,7 @@ layout: default
 
 #### Abstract
 
-[**TabbyML**](https://github.com/TabbyML/tabby) is....
+[**TabbyML**](https://github.com/TabbyML/tabby) is a specialised local inference server for "Fill-In-The-Middle" (FIM) code completion. It has specialised logic for RAG to make the model smarter about the current project structure.
 
 #### Usage
 
