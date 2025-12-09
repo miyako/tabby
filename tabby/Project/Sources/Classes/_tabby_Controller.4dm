@@ -9,7 +9,7 @@ Class constructor($CLI : cs:C1710._CLI)
 	
 	This:C1470.clear()
 	
-Function clear() : cs:C1710._llama_Controller
+Function clear() : cs:C1710._tabby_Controller
 	
 	This:C1470.stdOut:=""
 	This:C1470.stdErr:=""

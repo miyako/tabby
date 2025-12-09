@@ -1,19 +1,27 @@
-Class extends _llama
+Class extends _tabby
 
 Class constructor($controller : 4D:C1709.Class)
 	
-	Super:C1705("server"; $controller)
+	Super:C1705($controller)
 	
 Function start($option : Object) : 4D:C1709.SystemWorker
 	
 	var $command : Text
 	$command:=This:C1470.escape(This:C1470.executablePath)
 	
-	Case of 
-		: (Value type:C1509($option.model)=Is object:K8:27) && (OB Instance of:C1731($option.model; 4D:C1709.File)) && ($option.model.exists)
-			$command+=" --model "
-			$command+=This:C1470.escape(This:C1470.expand($option.model).path)
-	End case 
+	$command+=" serve "
+	
+	var $models : Collection
+	$models:=[]
+	If ($option.models#Null:C1517)
+		For each ($model; $option.models)
+			If (OB Instance of:C1731($model.file; 4D:C1709.File))
+				If (Value type:C1509($model.file)=Is object:K8:27) && (OB Instance of:C1731($model.file; 4D:C1709.File)) && ($model.file.exists)
+					$models.push(This:C1470.escape(This:C1470.expand($model.file).path))
+				End if 
+			End if 
+		End for each 
+	End if 
 	
 	var $arg : Object
 	var $valueType : Integer
@@ -21,8 +29,8 @@ Function start($option : Object) : 4D:C1709.SystemWorker
 	
 	For each ($arg; OB Entries:C1720($option))
 		Case of 
-			: (["model"; "model_url"; \
-				"docker_repo"].includes($arg.key))
+			: (["model"; "chat_model"; \
+				"help"].includes($arg.key))
 				continue
 		End case 
 		$valueType:=Value type:C1509($arg.value)
@@ -41,5 +49,5 @@ Function start($option : Object) : 4D:C1709.SystemWorker
 		End case 
 	End for each 
 	
-	return This:C1470.controller.execute($command; $isStream ? $option.model : Null:C1517; $option.data).worker
+	return This:C1470.controller.execute($command; Null:C1517; $option.data).worker
 	
