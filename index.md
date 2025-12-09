@@ -21,7 +21,7 @@ Instantiate `cs.tabby.tabby` in your *On Startup* database method:
 var $tabby : cs.tabby
 
 If (False)
-    $tabby:=cs.tabby.new()  //default
+    $tabby:=cs.tabby.tabby.new()  //default
 Else 
     
     var $port : Integer
@@ -36,7 +36,7 @@ Else
             $device:="cpu"
     End case 
     
-    $tabby:=cs.tabby.new($port; {\
+    $tabby:=cs.tabby.tabby.new($port; {\
     model: "StarCoder-1B"; \
     chat_model: "Qwen2.5-Coder-0.5B-Instruct"; \
     device: $device; \
@@ -53,8 +53,8 @@ Unless the server is already running (in which case the costructor does nothing)
 Finally to terminate the server:
 
 ```4d
-var $tabby : cs.tabby
-$tabby:=cs.tabby.new()
+var $tabby : cs.tabby.tabby
+$tabby:=cs.tabby.tabby.new()
 $tabby.terminate()
 ```
 
