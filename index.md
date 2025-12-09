@@ -50,6 +50,16 @@ Unless the server is already running (in which case the costructor does nothing)
 1. The specified models are downloaded via HTTP
 2. The `tabby` program is started
 
+#### Install IDE Extension
+
+* [Tabby VSCode Extension](https://marketplace.visualstudio.com/items?itemName=TabbyML.vscode-tabby)
+
+Visit http://localhost:8080/ (or your server address) and follow the instructions to create your account. After creating your account, you can find your token for connecting to the server.
+
+In VSCode, connect to server.
+
+
+
 Finally to terminate the server:
 
 ```4d
@@ -66,8 +76,8 @@ The API is compatibile with [Open AI](https://platform.openai.com/docs/api-refer
 |-|-|:-:|
 |Models|`/v1/models`||
 |Chat|`/v1/chat/completions`|✅|
-|Chat|`/completions`|✅|
+|Completion|`/v1/completions`|✅|
 |Images|`/v1/images/generations`||
 |Moderations|`/v1/moderations`||
-|Embeddings|`/v1/embeddings`||
+|Embeddings|`/v1/embeddings`|✅|
 |Files|`/v1/files`||
