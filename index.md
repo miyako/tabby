@@ -18,5 +18,56 @@ layout: default
 Instantiate `cs.tabby.tabby` in your *On Startup* database method:
 
 ```4d
+var $tabby : cs.tabby
 
+If (False)
+    $tabby:=cs.tabby.new()  //default
+Else 
+    
+    var $port : Integer
+    $port:=8080
+    
+    Case of 
+        : (Is macOS) && (Get system info.processor="@apple@")
+            $device:="metal"
+        : (Is Windows)
+            $device:="vulcan"
+        Else 
+            $device:="cpu"
+    End case 
+    
+    $tabby:=cs.tabby.new($port; {\
+    model: "StarCoder-1B"; \
+    chat_model: "Qwen2.5-Coder-0.5B-Instruct"; \
+    device: $device; \
+    parallelism: 1}; Formula(ALERT(This.options.models.extract("file.fullName").join(",")+($1.success ? " started!" : " did not start..."))))
+    
+End if 
 ```
+
+Unless the server is already running (in which case the costructor does nothing), the following procedure runs in the background:
+
+1. The specified models are downloaded via HTTP
+2. The `tabby` program is started
+
+Finally to terminate the server:
+
+```4d
+var $tabby : cs.tabby
+$tabby:=cs.tabby.new()
+$tabby.terminate()
+```
+
+#### AI Kit compatibility
+
+The API is compatibile with [Open AI](https://platform.openai.com/docs/api-reference/embeddings). 
+
+|Class|API|Availability|
+|-|-|:-:|
+|Models|`/v1/models`||
+|Chat|`/v1/chat/completions`|✅|
+|Chat|`/completions`|✅|
+|Images|`/v1/images/generations`||
+|Moderations|`/v1/moderations`||
+|Embeddings|`/v1/embeddings`||
+|Files|`/v1/files`||
