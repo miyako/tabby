@@ -54,11 +54,9 @@ Unless the server is already running (in which case the costructor does nothing)
 
 * [Tabby VSCode Extension](https://marketplace.visualstudio.com/items?itemName=TabbyML.vscode-tabby)
 
-Visit http://localhost:8080/ (or your server address) and follow the instructions to create your account. After creating your account, you can find your token for connecting to the server.
+Visit [http://localhost:8080/](http://localhost:8080/]) and follow the instructions to create your account. After creating your account, you can find your token for connecting to the server.
 
 In VSCode, connect to server.
-
-
 
 Finally to terminate the server:
 
