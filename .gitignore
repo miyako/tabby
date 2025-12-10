@@ -1,4 +1,6 @@
-tabby/Project/DerivedData/methodAttributes.json
-tabby/Project/DerivedData/formAttributes.json
-tabby/Data/data.4DD
+tabby/Data/*
 tabby/userPreferences.*
+tabby/Project/DerivedData/*
+tabby/Libraries/lib4d-arm64.dylib
+tabby/Settings/buildApp.4DSettings
+tabby/Resources/en.lproj/syntaxEN.json
