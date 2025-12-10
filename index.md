@@ -130,7 +130,7 @@ data: {"id":"chatcmpl-3ewdYlS51ra4RQ3LJATBPDOf1Qu5Hpqa","choices":[{"index":0,"d
 ...
 ```
 
-### Use the Web UI
+#### Use the Web UI
 
 Visit [http://localhost:8080/](http://localhost:8080/]), select a repository and ask a specific technical question about the project.
 
