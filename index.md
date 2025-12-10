@@ -11,11 +11,16 @@ layout: default
 
 #### Abstract
 
-[**TabbyML**](https://github.com/TabbyML/tabby) is a specialised local inference server for "Fill-In-The-Middle" (FIM) code completion. It has specialised logic for RAG to make the model smarter about the current project structure.
+[**TabbyML**](https://github.com/TabbyML/tabby) is a local inference server for "Fill-In-The-Middle" (FIM) code completion. It has a specialised RAG logic for coding to generate tokens are the most relevant to the current workspace.
 
-You typically use `2` models, one for conversation and another for coding. The AI generated code can be augumented by indexing the codebase (RAG).
+You typically use pair of models, one for conversation and another for coding. The AI generated code can be augmented by indexing the codebase (RAG). The conversation model is trained understand semantic queries and the coding model is to trained to generate better code.
 
+For instance, one may use the following combination:
 
+* StarCoder-1B for coding (`675.7 MB`)
+* Qwen2.5-Coder-0.5B-Instruct for chat (`1.32 GB`)
+
+The idea is to run the AI locally instead of using online such as Copilot, Claude Sonnet or ChatGPT.
 
 #### Usage
 
