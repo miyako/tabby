@@ -8,7 +8,7 @@ Else
 	$port:=8080
 	
 	Case of 
-		: (Is macOS:C1572) && (Get system info:C1571.processor="@apple@")
+		: (Is macOS:C1572) && (System info:C1571.processor="@apple@")
 			$device:="metal"
 		: (Is Windows:C1573)
 			$device:="vulcan"
@@ -39,6 +39,15 @@ Else
 	var $ignore : Collection
 	$ignore:=["Libraries/"; "Data/"; "userPreferences.*"]
 	
+	var $event : cs:C1710.tabbyEvent
+	$event:=cs:C1710.tabbyEvent.new()
+/*
+Function onError($params : Object; $error : cs._error)
+Function onSuccess($params : Object)
+*/
+	$event.onError:=Formula:C1597(ALERT:C41($2.message))
+	$event.onSuccess:=Formula:C1597(ALERT:C41([$1.model; $1.chat_model].join(",")+" loaded!"))
+	
 	$tabby:=cs:C1710.tabby.new($port; {\
 		model: "StarCoder-1B"; \
 		chat_model: "Qwen2.5-Coder-0.5B-Instruct"; \
@@ -46,6 +55,6 @@ Else
 		parallelism: 1; \
 		root: $TABBY_ROOT; \
 		repositories: $repositories; \
-		ignore: $ignore}; Formula:C1597(ALERT:C41(This:C1470.options.models.extract("file.fullName").join(",")+($1.success ? " started!" : " did not start..."))))
+		ignore: $ignore}; $event)
 	
 End if 

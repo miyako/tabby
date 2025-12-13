@@ -27,7 +27,7 @@ The idea is to run the AI locally instead of using online such as Copilot, Claud
 Instantiate `cs.tabby.tabby` in your *On Startup* database method:
 
 ```4d
-var $tabby : cs.tabby
+var $tabby : cs.tabby.tabby
 
 If (False)
     $tabby:=cs.tabby.tabby.new()  //default
@@ -37,7 +37,7 @@ Else
     $port:=8080
     
     Case of 
-        : (Is macOS) && (Get system info.processor="@apple@")
+        : (Is macOS) && (System info.processor="@apple@")
             $device:="metal"
         : (Is Windows)
             $device:="vulcan"
@@ -68,6 +68,15 @@ Else
     var $ignore : Collection
     $ignore:=["Libraries/"; "Data/"; "userPreferences.*"]
     
+    var $event : cs.tabby.tabbyEvent
+    $event:=cs.tabby.tabbyEvent.new()
+    /*
+        Function onError($params : Object; $error : cs._error)
+        Function onSuccess($params : Object)
+    */
+    $event.onError:=Formula(ALERT($2.message))
+    $event.onSuccess:=Formula(ALERT([$1.model; $1.chat_model].join(",")+" loaded!"))
+    
     $tabby:=cs.tabby.tabby.new($port; {\
     model: "StarCoder-1B"; \
     chat_model: "Qwen2.5-Coder-0.5B-Instruct"; \
@@ -75,7 +84,7 @@ Else
     parallelism: 1; \
     root: $TABBY_ROOT; \
     repositories: $repositories; \
-    ignore: $ignore}; Formula(ALERT(This.options.models.extract("file.fullName").join(",")+($1.success ? " started!" : " did not start..."))))
+    ignore: $ignore}; $event)
     
 End if 
 ```
@@ -107,7 +116,7 @@ curl http://localhost:8080/v1/completions \
 {"id":"cmpl-f6f89dca-549a-4a7c-a129-8b976083dd9c","choices":[{"index":0,"text":"\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)\n"}],"mode":"standard"}
 ```
 
-The newer chart endpoint:
+The newer chat endpoint:
 
 ```
 curl http://localhost:8080/v1/chat/completions \

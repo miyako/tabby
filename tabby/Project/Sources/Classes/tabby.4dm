@@ -1,9 +1,9 @@
-Class constructor($port : Integer; $options : Object; $formula : 4D:C1709.Function)
+Class constructor($port : Integer; $options : Object; $event : cs:C1710._event)
 	
-	var $llama : cs:C1710._worker
-	$llama:=cs:C1710._worker.new()
+	var $tabby : cs:C1710.workers.worker
+	$tabby:=cs:C1710.workers.worker.new(cs:C1710._server)
 	
-	If (Not:C34($llama.isRunning($port)))
+	If (Not:C34($tabby.isRunning($port)))
 		
 		If ($options=Null:C1517)
 			$options:={}
@@ -21,17 +21,40 @@ Class constructor($port : Integer; $options : Object; $formula : 4D:C1709.Functi
 			$port:=8080
 		End if 
 		
-		CALL WORKER:C1389(OB Class:C1730(This:C1470).name; This:C1470._Start; $port; $options; $formula)
+		This:C1470.main($port; $options; $event)
 		
 	End if 
 	
-Function _Start($port : Integer; $options : Object; $formula : 4D:C1709.Function)
+Function onTCP($status : Object; $options : Object)
 	
-	var $model : cs:C1710.Model
-	$model:=cs:C1710.Model.new($port; $options; $formula)
+	If ($status.success)
+		
+		var $className : Text
+		$className:=Split string:C1554(Current method name:C684; "."; sk trim spaces:K86:2).first()
+		
+		CALL WORKER:C1389($className; Formula:C1597(start); $options; Formula:C1597(onModel))
+		
+	Else 
+		
+		var $statuses : Text
+		$statuses:="TCP port "+String:C10($status.port)+" is aready used by process "+$status.PID.join(",")
+		var $error : cs:C1710._error
+		$error:=cs:C1710._error.new(1; $statuses)
+		
+		If ($options.event#Null:C1517) && (OB Instance of:C1731($options.event; cs:C1710._event))
+			$options.event.onError.call(This:C1470; $options; $error)
+		End if 
+		
+		This:C1470.terminate()
+		
+	End if 
+	
+Function main($port : Integer; $options : Object; $event : cs:C1710._event)
+	
+	main({port: $port; options: $options; event: $event}; This:C1470.onTCP)
 	
 Function terminate()
 	
-	var $llama : cs:C1710._worker
-	$llama:=cs:C1710._worker.new()
-	$llama.terminate()
+	var $tabby : cs:C1710.workers.worker
+	$tabby:=cs:C1710.workers.worker.new(cs:C1710._server)
+	$tabby.terminate()

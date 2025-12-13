@@ -12,8 +12,9 @@ property decodeData : Boolean
 property range : Object
 property bufferSize : Integer
 property models : Collection
+property event : cs:C1710._event
 
-Class constructor($port : Integer; $options : Object; $formula : 4D:C1709.Function)
+Class constructor($port : Integer; $options : Object; $formula : 4D:C1709.Function; $event : cs:C1710._event)
 	
 	This:C1470.method:="GET"
 	This:C1470.headers:={Accept: "application/vnd.github+json"}
@@ -26,6 +27,7 @@ Class constructor($port : Integer; $options : Object; $formula : 4D:C1709.Functi
 	This:C1470.returnResponseBody:=False:C215
 	This:C1470.decodeData:=False:C215
 	This:C1470.bufferSize:=10*(1024^2)
+	This:C1470.event:=$event
 	
 	This:C1470.start()
 	
@@ -72,13 +74,12 @@ Function start()
 	
 	If ($model=Null:C1517)
 		
-		var $llama : cs:C1710._worker
-		$llama:=cs:C1710._worker.new()
+		var $tabby : cs:C1710.workers.worker
+		$tabby:=cs:C1710.workers.worker.new(cs:C1710._server)
+		$tabby.start(This:C1470.options.port; This:C1470.options)
 		
-		$llama.start(This:C1470.options.port; This:C1470.options)
-		
-		If (Value type:C1509(This:C1470._onResponse)=Is object:K8:27) && (OB Instance of:C1731(This:C1470._onResponse; 4D:C1709.Function))
-			This:C1470._onResponse.call(This:C1470; {success: True:C214})
+		If (This:C1470.event#Null:C1517) && (OB Instance of:C1731(This:C1470.event; cs:C1710._event))
+			This:C1470.event.onSuccess.call(This:C1470; This:C1470.options)
 		End if 
 		
 	Else 
@@ -89,10 +90,9 @@ Function start()
 	
 Function terminate()
 	
-	var $llama : cs:C1710._worker
-	$llama:=cs:C1710._worker.new()
-	
-	$llama.terminate()
+	var $tabby : cs:C1710.workers.worker
+	$tabby:=cs:C1710.workers.worker.new(cs:C1710._server)
+	$tabby.terminate()
 	
 Function onData($request : 4D:C1709.HTTPRequest; $event : Object)
 	
