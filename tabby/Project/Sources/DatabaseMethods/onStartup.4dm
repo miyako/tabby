@@ -49,7 +49,7 @@ Function onSuccess($params : Object)
 	$event.onSuccess:=Formula:C1597(ALERT:C41([$1.model; $1.chat_model].join(",")+" loaded!"))
 	
 	$tabby:=cs:C1710.tabby.new($port; {\
-		model: "StarCoder-1B"; \
+		model: "Nomic-Embed-Text"; \
 		chat_model: "Qwen2.5-Coder-0.5B-Instruct"; \
 		device: $device; \
 		parallelism: 1; \
