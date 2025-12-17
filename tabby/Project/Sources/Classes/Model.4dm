@@ -12,9 +12,9 @@ property decodeData : Boolean
 property range : Object
 property bufferSize : Integer
 property models : Collection
-property event : cs:C1710._event
+property event : cs:C1710.event.event
 
-Class constructor($port : Integer; $options : Object; $formula : 4D:C1709.Function; $event : cs:C1710._event)
+Class constructor($port : Integer; $options : Object; $formula : 4D:C1709.Function; $event : cs:C1710.event.event)
 	
 	This:C1470.method:="GET"
 	This:C1470.headers:={Accept: "application/vnd.github+json"}
@@ -69,22 +69,31 @@ Function head($model : cs:C1710._model)
 	
 Function start()
 	
-	var $model : cs:C1710._model
-	$model:=This:C1470.options.models.query("file.exists == :1"; False:C215).first()
+	var $_model : cs:C1710._model
+	$_model:=This:C1470.options.models.query("file.exists == :1"; False:C215).first()
 	
-	If ($model=Null:C1517)
+	If ($_model=Null:C1517)
 		
 		var $tabby : cs:C1710.workers.worker
 		$tabby:=cs:C1710.workers.worker.new(cs:C1710._server)
 		$tabby.start(This:C1470.options.port; This:C1470.options)
 		
-		If (This:C1470.event#Null:C1517) && (OB Instance of:C1731(This:C1470.event; cs:C1710._event))
-			This:C1470.event.onSuccess.call(This:C1470; This:C1470.options)
+		If (This:C1470.event#Null:C1517) && (OB Instance of:C1731(This:C1470.event; cs:C1710.event.event))
+			var $_models : Collection
+			$_models:=[]
+			var $model : cs:C1710.event.model
+			$model:=cs:C1710.event.model.new(This:C1470.options.model; True:C214)
+			$_models.push($model)
+			$model:=cs:C1710.event.model.new(This:C1470.options.chat_model; True:C214)
+			$_models.push($model)
+			var $models : cs:C1710.event.models
+			$models:=cs:C1710.event.models.new($_models)
+			This:C1470.event.onSuccess.call(This:C1470; This:C1470.options; $models)
 		End if 
 		
 	Else 
 		
-		This:C1470._head($model)
+		This:C1470._head($_model)
 		
 	End if 
 	
@@ -100,6 +109,10 @@ Function onData($request : 4D:C1709.HTTPRequest; $event : Object)
 		This:C1470._fileHandle.writeBlob($event.data)
 	End if 
 	
+	If (This:C1470.event#Null:C1517) && (OB Instance of:C1731(This:C1470.event; cs:C1710.event.event))
+		This:C1470.event.onData.call(This:C1470; $request; $event)
+	End if 
+	
 Function onResponse($request : 4D:C1709.HTTPRequest; $event : Object)
 	
 	If ($request.dataType="blob") && ($request.response.body#Null:C1517)
@@ -110,6 +123,9 @@ Function onResponse($request : 4D:C1709.HTTPRequest; $event : Object)
 		: (This:C1470.range.end=0)  //simple get
 			If ($request.response.status=200)
 				This:C1470._fileHandle:=Null:C1517
+				If (This:C1470.event#Null:C1517) && (OB Instance of:C1731(This:C1470.event; cs:C1710.event.event))
+					This:C1470.event.onResponse.call(This:C1470; $request; $event)
+				End if 
 				This:C1470.start()
 			End if 
 		Else   //range get
@@ -124,6 +140,9 @@ Function onResponse($request : 4D:C1709.HTTPRequest; $event : Object)
 					4D:C1709.HTTPRequest.new(This:C1470.URL; This:C1470)
 				Else 
 					This:C1470._fileHandle:=Null:C1517
+					If (This:C1470.event#Null:C1517) && (OB Instance of:C1731(This:C1470.event; cs:C1710.event.event))
+						This:C1470.event.onResponse.call(This:C1470; $request; $event)
+					End if 
 					This:C1470.start()
 				End if 
 			End if 

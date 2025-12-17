@@ -27,7 +27,7 @@ The idea is to run the AI locally instead of using online such as Copilot, Claud
 Instantiate `cs.tabby.tabby` in your *On Startup* database method:
 
 ```4d
-var $tabby : cs.tabby.tabby
+var $tabby : cs.tabby
 
 If (False)
     $tabby:=cs.tabby.tabby.new()  //default
@@ -68,14 +68,16 @@ Else
     var $ignore : Collection
     $ignore:=["Libraries/"; "Data/"; "userPreferences.*"]
     
-    var $event : cs.tabby.tabbyEvent
-    $event:=cs.tabby.tabbyEvent.new()
+    var $event : cs.event.event
+    $event:=cs.event.event.new()
     /*
-        Function onError($params : Object; $error : cs._error)
-        Function onSuccess($params : Object)
+        Function onError($params : Object; $error : cs.event.error)
+        Function onSuccess($params : Object; $models : cs.event.models)
     */
     $event.onError:=Formula(ALERT($2.message))
-    $event.onSuccess:=Formula(ALERT([$1.model; $1.chat_model].join(",")+" loaded!"))
+    $event.onSuccess:=Formula(ALERT($2.models.extract("name").join(",")+" loaded!"))
+    $event.onData:=Formula(MESSAGE(String((This.range.end/This.range.length)*100; "###.00%")))  //onData@4D.HTTPRequest
+    $event.onResponse:=Formula(ERASE WINDOW)  //onResponse@4D.HTTPRequest
     
     $tabby:=cs.tabby.tabby.new($port; {\
     model: "StarCoder-1B"; \
