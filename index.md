@@ -27,14 +27,14 @@ The idea is to run the AI locally instead of using online such as Copilot, Claud
 Instantiate `cs.tabby.tabby` in your *On Startup* database method:
 
 ```4d
-var $tabby : cs.tabby
+var $tabby : cs.tabby.tabby
 
 If (False)
     $tabby:=cs.tabby.tabby.new()  //default
 Else 
     
     var $port : Integer
-    $port:=8080
+    $port:=8088
     
     Case of 
         : (Is macOS) && (System info.processor="@apple@")
