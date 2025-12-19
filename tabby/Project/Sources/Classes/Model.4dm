@@ -11,7 +11,6 @@ property returnResponseBody : Boolean
 property decodeData : Boolean
 property range : Object
 property bufferSize : Integer
-property models : Collection
 property event : cs:C1710.event.event
 
 Class constructor($port : Integer; $options : Object; $formula : 4D:C1709.Function; $event : cs:C1710.event.event)
