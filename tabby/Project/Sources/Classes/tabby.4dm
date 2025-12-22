@@ -21,11 +21,11 @@ Class constructor($port : Integer; $options : Object; $event : cs:C1710.event.ev
 			$port:=8080
 		End if 
 		
-		This:C1470.main($port; $options; $event)
+		This:C1470._main($port; $options; $event)
 		
 	End if 
 	
-Function onTCP($status : Object; $options : Object)
+Function _onTCP($status : Object; $options : Object)
 	
 	If ($status.success)
 		
@@ -47,9 +47,9 @@ Function onTCP($status : Object; $options : Object)
 		
 	End if 
 	
-Function main($port : Integer; $options : Object; $event : cs:C1710.event.event)
+Function _main($port : Integer; $options : Object; $event : cs:C1710.event.event)
 	
-	main({port: $port; options: $options; event: $event}; This:C1470.onTCP)
+	main({port: $port; options: $options; event: $event}; This:C1470._onTCP)
 	
 Function terminate()
 	
